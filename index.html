@@ -105,7 +105,7 @@
         if(texto[i].includes(veiculos[j]) && !texto[i].includes("para trem e vinho")){
           texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" - Estar")        
         }
-        else if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho")){
+        else if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho" ) || texo[i].includes("para Trem e vinho") || texo[i].includes("para Trem e Vinho")){
           texto[i] = texto[i].replaceAll("para trem e vinho","para Tour Trem e Vinho")
           texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" -")  
         }
