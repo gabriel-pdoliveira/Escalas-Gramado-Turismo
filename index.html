@@ -99,12 +99,13 @@
 
       // ADICIONANDO OS MOTORISTAS NO MEIO DA STRING E FORMATANDO COMO ELES DEVEM APARECER
       for (let j = 0; j < veiculos.length; j++) {
-        if(texto[i].includes(veiculos[j]) && !texto[i].includes("para trem e vinho")){
-          texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" - Estar")        
-        }
-        else if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho" ) || texto[i].includes("para Trem e vinho") || texto[i].includes("para Trem e Vinho")){
+        if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho" ) || texto[i].includes("para Trem e vinho") || texto[i].includes("para Trem e Vinho")){
           texto[i] = texto[i].replaceAll("para trem e vinho","para Tour Trem e Vinho")
           texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" -")  
+        }
+        else{            
+          texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" - Estar")       
+        
         }
       }
     }
