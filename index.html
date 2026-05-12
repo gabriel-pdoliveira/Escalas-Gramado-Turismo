@@ -2,11 +2,11 @@
 <!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="./bus.png" type="image/png">
-  <title>Formatar Mensagem com Motoristas</title>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./image/bus.png">
+    <title>Formatar Mensagem com Motoristas</title>
+    <style>
     body { font-family: Arial, sans-serif; padding: 20px; background-color: #fafafa; }
     textarea, input { width: 100%; font-size: 14px; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
     button { padding: 8px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 14px; }
@@ -96,16 +96,13 @@
       if(texto[i].includes("brocker")){
         texto[i] = texto[i].replaceAll("brocker","Brocker")        
       }
-      // if(texto[i].includes("para trem e vinho")){
-      //   texto[i] = texto[i].replaceAll("para trem e vinho","para Tour Trem e Vinho")        
-      // }
 
       // ADICIONANDO OS MOTORISTAS NO MEIO DA STRING E FORMATANDO COMO ELES DEVEM APARECER
       for (let j = 0; j < veiculos.length; j++) {
         if(texto[i].includes(veiculos[j]) && !texto[i].includes("para trem e vinho")){
           texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" - Estar")        
         }
-        else if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho" ) || texo[i].includes("para Trem e vinho") || texo[i].includes("para Trem e Vinho")){
+        else if(texto[i].includes(veiculos[j]) && texto[i].includes("para trem e vinho" ) || texto[i].includes("para Trem e vinho") || texto[i].includes("para Trem e Vinho")){
           texto[i] = texto[i].replaceAll("para trem e vinho","para Tour Trem e Vinho")
           texto[i] = texto[i].replaceAll(veiculos[j],veiculos[j]+"* - "+escala[i]+" -")  
         }
