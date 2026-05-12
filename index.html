@@ -1,3 +1,4 @@
+
 <!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
@@ -37,149 +38,6 @@
   <button onclick="copiarResumo()">Copiar resumo</button>
 </div>
 
-<!-- <script>
-
-function formatarMensagem() {
-  const mensagem = document.getElementById('mensagemInput').value.trim();
-  const motoristasTexto = document.getElementById('motoristasInput').value.trim();
-  const saida = document.getElementById('saida');
-  const resumoGeral = document.getElementById('resumoGeral');
-  saida.innerHTML = '';
-  resumoGeral.value = '';
-
-  if (!mensagem) { alert("Por favor, cole a mensagem!"); return; }
-
-  // Cria objeto de motoristas
-  const motoristas = {};
-  if (motoristasTexto) {
-    motoristasTexto.split(',').forEach(par => {
-      const [bus, ...nomeParts] = par.trim().split(/\s+/);
-      const nome = nomeParts.join(' ');
-      if (bus && nome) motoristas[bus] = nome;
-    });
-  }
-
-  // Data de amanhã
-  const hoje = new Date();
-  const amanha = new Date();
-  amanha.setDate(hoje.getDate() + 1);
-  const dia = String(amanha.getDate()).padStart(2, '0');
-  const mes = String(amanha.getMonth() + 1).padStart(2, '0');
-  const diasSemana = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-  const diaSemana = diasSemana[amanha.getDay()];
-
-  const linhas = mensagem.split('\n').filter(l => l.trim() !== '');
-  const blocos = []; // Para resumo geral
-
-  linhas.forEach((linha) => {
-    const div = document.createElement('div');
-    div.className = 'linha';
-
-    // Detecta tipo
-    let tipo, emoji;
-    if (/MICRO/i.test(linha)) { tipo = 'MICRO'; emoji = '🚐'; }
-    else { tipo = 'BUS'; emoji = '🚎'; }
-
-    // Número e motorista
-    const matchBus = linha.match(/\b(\d{3,4})\b/);
-    const numeroBus = matchBus ? matchBus[1] : '???';
-    const motorista = motoristas[numeroBus] || 'Sem motorista';
-
-    // Guia
-    const matchGuia = linha.match(/GUIA\s+(.+)$/i);
-    const guia = matchGuia ? matchGuia[1].trim() : 'N/D';
-
-    // Trecho serviço
-    const [antesPara, depoisPara] = linha.split(/para\s+/i);
-    const servico = depoisPara ? depoisPara.replace(/\s*-\s*GUIA.*/i, '').trim() : '';
-    const localHora = antesPara ? antesPara.split(/\d{3,4}/)[1]?.trim() || '' : '';
-
-    const incluirEstar = !/trem e vinho/i.test(servico);
-
-    // Linha normal com asteriscos
-    const textoLinha = incluirEstar
-      ? `*${tipo} ${numeroBus}* - ${motorista} - *estar ${localHora} - para ${servico}* - GUIA ${guia}`
-      : `*${tipo} ${numeroBus}* - ${motorista} - *para ${servico}* - GUIA ${guia}`;
-
-    blocos.push(textoLinha);
-
-    // Mensagem individual
-    const textoFinal = incluirEstar
-      ? `${emoji} *${tipo.charAt(0)}${numeroBus}* - ${motorista} – *Estar ${localHora}* - para ${servico} - GUIA ${guia}`
-      : `${emoji} *${tipo.charAt(0)}${numeroBus}* - ${motorista} - para ${servico} - GUIA ${guia}`;
-
-    const saudacao = `Boa tarde ${motorista}! Tudo bem?!\n*Segue demandas de amanhã ${dia}/${mes}, ${diaSemana}:*`;
-
-    let textoFinalComSaudacao = `${saudacao}\n${textoFinal}`;
-
-    const textoEl = document.createElement('div');
-    textoEl.className = 'texto';
-    textoEl.textContent = textoFinalComSaudacao;
-
-    const botao = document.createElement('button');
-    botao.textContent = 'Copiar';
-    botao.onclick = () => copiarTexto(textoFinalComSaudacao, botao);
-
-    div.appendChild(textoEl);
-    div.appendChild(botao);
-    saida.appendChild(div);
-  });
-
-  // ✅ Linha fixa BUS 1150 de segunda a sexta
-  const isSemana = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'].includes(diaSemana);
-  const linhaEspecial = '*BUS 1150* - Rodrigo – Faccat – *Embarque de Estudantes às 17:30.*';
-  if (isSemana) {
-    blocos.push(linhaEspecial);
-
-    // Adiciona nos textos individuais de todos, se quiser repetir no final
-    const divEspecial = document.createElement('div');
-    divEspecial.className = 'linha';
-    const textoElEspecial = document.createElement('div');
-    textoElEspecial.className = 'texto';
-    textoElEspecial.textContent = `Boa tarde! Tudo bem?!\n*Segue demandas de amanhã ${dia}/${mes}, ${diaSemana}:*\n\n${linhaEspecial}`;
-    const botaoEspecial = document.createElement('button');
-    botaoEspecial.textContent = 'Copiar';
-    botaoEspecial.onclick = () => copiarTexto(textoElEspecial.textContent, botaoEspecial);
-    divEspecial.appendChild(textoElEspecial);
-    divEspecial.appendChild(botaoEspecial);
-    saida.appendChild(divEspecial);
-  }
-
-  // Monta o resumo geral
-  if (blocos.length > 0) {
-    const resumo = `Boa tarde! Tudo bem?!\n*Segue demandas de amanhã ${dia}/${mes}, ${diaSemana}:*\n\n${blocos.join('\n\n')}`;
-    resumoGeral.value = resumo;
-  }
-}
-
-  async function copiarTexto(texto, botao) {
-    try {
-      await navigator.clipboard.writeText(texto);
-      const original = botao.textContent;
-      botao.textContent = 'Copiado!';
-      botao.style.backgroundColor = '#28a745';
-      setTimeout(() => {
-        botao.textContent = original;
-        botao.style.backgroundColor = '#007bff';
-      }, 1500);
-    } catch (err) {
-      alert('Erro ao copiar: ' + err);
-    }
-  }
-
-  async function copiarResumo() {
-    const resumo = document.getElementById('resumoGeral').value;
-    if (!resumo.trim()) return alert("Nenhum resumo gerado ainda!");
-    try {
-      await navigator.clipboard.writeText(resumo);
-      alert("Resumo copiado com sucesso!");
-    } catch (err) {
-      alert("Erro ao copiar resumo: " + err);
-    }
-  }
-*/
-</script> -->
-
 <script>
   function formatarMensagem() {
     const mensagem = document.getElementById('mensagemInput').value
@@ -215,12 +73,15 @@ function formatarMensagem() {
 
     for (let i = 0; i < texto.length; i++) {
       texto[i] = texto[i].replaceAll("Bus","*BUS")
-      texto[i] = texto[i].replaceAll("Micro","*MICRO")        
+      texto[i] = texto[i].replaceAll("BUS","*BUS")
+      texto[i] = texto[i].replaceAll("Micro","*MICRO")
+      texto[i] = texto[i].replaceAll("MICRO","*MICRO")   
       texto[i] = texto[i].replaceAll("com","- GUIA") 
+      texto[i] = texto[i].replaceAll("COM","- GUIA") 
       if(texto[i].includes("para out")){
         texto[i] = texto[i].replaceAll("para out","para Transfer OUT")        
       }
-      if(texto[i].includes("para in ")){
+      if(texto[i].includes("para in")){
         texto[i] = texto[i].replaceAll("para in","para Transfer IN")        
       }
       else if(texto[i].includes("pra in")){
@@ -335,7 +196,3 @@ function formatarMensagem() {
 
 </body>
 </html>
-
-
-
-
